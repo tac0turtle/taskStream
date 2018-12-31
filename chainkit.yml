@@ -1,0 +1,5 @@
+name: do_or_dare
+image: chainkit-do_or_dare
+binaries:
+  cli: do_or_darecli
+  daemon: do_or_dared
