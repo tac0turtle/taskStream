@@ -9,7 +9,7 @@ type Task struct {
 	Value           sdk.Coins        `json:"value`
 }
 
-func createTask(taskTitle string, taskDescription string, backers []sdk.AccAddress, value sdk.Coins) Task {
+func CreateTask(taskTitle string, taskDescription string, backers []sdk.AccAddress, value sdk.Coins) Task {
 	return Task{
 		TaskTitle:       taskTitle,
 		TaskDescription: taskDescription,

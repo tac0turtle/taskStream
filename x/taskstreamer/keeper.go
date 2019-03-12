@@ -26,18 +26,18 @@ func NewKeeper(coinKeeper bank.Keeper, taskStore sdk.StoreKey, cdc *codec.Codec)
 
 func (k Keeper) GetTask(ctx sdk.Context, taskTitle string) taskType.Task {
 	store := ctx.KVStore(k.taskStore)
-	if !store.Has([]byte(name)) {
-		return
+	if !store.Has([]byte(taskTitle)) {
+		panic("Naa")
 	}
-	task := store.Get([]byte(taskName))
+	task := store.Get([]byte(taskTitle))
 	var taskDetails taskType.Task
-	k.cdc.MarshalBinaryBare(task, &taskDetails)
+	k.cdc.MustUnmarshalBinaryBare(task, &taskDetails)
 	return taskDetails
 }
 
 func (k Keeper) SetTask(ctx sdk.Context, taskTitle string, taskData taskType.Task) {
 	store := ctx.KVStore(k.taskStore)
-	store.Set([]byte(taskName), []byte(taskData))
+	store.Set([]byte(taskTitle), k.cdc.MustMarshalBinaryBare(taskData))
 }
 
 func (k Keeper) CreateTask(ctx sdk.Context, taskTitle string, taskDescription string, backers []sdk.AccAddress, value sdk.Coins) {
@@ -47,7 +47,7 @@ func (k Keeper) CreateTask(ctx sdk.Context, taskTitle string, taskDescription st
 
 func (k Keeper) BecomeBacker(ctx sdk.Context, taskTitle string, newBacker sdk.AccAddress, addedValue sdk.Coins) {
 	task := k.GetTask(ctx, taskTitle)
-	task.Value + addedValue
+	task.Value = task.Value.Add(addedValue)
 	task.Backers = append(task.Backers, newBacker)
 	k.SetTask(ctx, taskTitle, task)
 }
